@@ -1,0 +1,13 @@
+[project]
+name = "book-whisper"
+version = "0.1.0"
+description = "Grabá una frase de un libro y descubrí tu próxima lectura"
+requires-python = ">=3.13"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "openai",
+    "python-dotenv",
+    "pydantic",
+]
