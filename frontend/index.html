@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Whisper</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Book Whisper</h1>
+    <h2>Grabá una frase de un libro y descubrí tu próxima lectura.</h2>
+
+    <div>
+      <div>
+        <h3>Estado: <span id="mic-status">esperando grabación</span></h3>
+        <div>
+          <button id="btn-grabar">
+            <i class="fa-solid fa-microphone"></i> Grabar
+          </button>
+          <button id="btn-detener">
+            <i class="fa-solid fa-stop"></i> Detener
+          </button>
+        </div>
+      </div>
+      <form>
+        <h3>Preview de tu grabación</h3>
+        <audio id="audio-preview" controls></audio>
+        <div>
+          <button type="button" id="btn-escuchar">
+            <i class="fa-solid fa-headphones"></i> Escuchar
+          </button>
+          <button type="button" id="btn-borrar">
+            <i class="fa-solid fa-trash"></i> Borrar
+          </button>
+          <button type="submit" id="btn-enviar">
+            <i class="fa-solid fa-paper-plane"></i> Enviar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <h3>Resultados</h3>
+      <div id="results">
+        <p class="cita"></p>
+        <div>
+          <div class="tema">
+            <h4 class="tema-title">Tema:</h4>
+            <p class="tema-content"></p>
+          </div>
+          <div class="tono">
+            <h4 class="tono-title">Tono:</h4>
+            <p class="tono-content"></p>
+          </div>
+        </div>
+        <div class="recomendacion">
+          <h4 class="recomendacion-title">Libros recomendados:</h4>
+          <div class="recomendacion-content">
+            <i class="fa-solid fa-book"></i>
+            <div class="detail">
+              <p class="recomendacion-title"></p>
+              <p class="recomendacion-author"></p>
+            </div>
+          </div>
+        </div>
+        <div class="frases">
+          <h4 class="frases-title">Frases celebres:</h4>
+          <div class="frases-content">
+            <i class="fa-solid fa-quote-left"></i>
+            <div class="detail">
+              <p class="frases-title"></p>
+              <p class="frases-author"></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 class="resumen-title">Para reflexionar:</h4>
+          <p class="resumen-content"></p>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
