@@ -1,15 +1,15 @@
-from backend.shared.config_loader import ConfigLoader
+from backend import config
 
-config = ConfigLoader()
+
 
 
 def generate_response(
     client,
     input_data,
 ):
-    max_tokens = config.get("openai.max_tokens", 2000)
-    temperature = config.get("openai.temperature", 0.2)
-    model = config.get("openai.model", "gpt-4o-mini")
+    max_tokens = config.MAX_TOKENS
+    temperature = config.TEMPERATURE
+    model = config.GPT_MODEL 
 
     args = {
         "model": model,

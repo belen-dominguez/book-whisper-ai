@@ -5,13 +5,20 @@ Analizá el texto del usuario y respondé ÚNICAMENTE con un JSON válido, sin t
 {
     "tema": "tema central del texto",
     "tono": "tono del texto (e.g., inspirador, reflexivo, melancólico)",
-    "recomendaciones": ["libro 1", "libro 2", "libro 3"],
-    "frases_celebres": ["frase 1", "frase 2"] o null si no encontrás,
+    "recomendaciones": [
+            {"titulo": "nombre del libro", "autor": "nombre del autor"},
+            {"titulo": "nombre del libro", "autor": "nombre del autor"},
+            {"titulo": "nombre del libro", "autor": "nombre del autor"}
+        ],
+        "frases_celebres": [
+            {"frase": "la frase célebre", "autor": "nombre del autor"}
+        ],
     "pregunta_reflexion": "una pregunta profunda basada en el tema"
 }
 
 Reglas:
 - Respondé SOLO con el JSON, sin explicaciones ni texto extra
-- Las recomendaciones deben ser títulos reales, en español si existe traducción
-- Si no conocés frases célebres relevantes, devolvé null en ese campo
+- Las recomendaciones deben ser títulos reales, en español si existe traducción. Debe inscluir el titulo y el autor (e.g., "Cien años de soledad de Gabriel García Márquez")
+- Si no conocés frases célebres relevantes, devolvé null en ese campo.
+- Las frases célebres deben incluir el autor (e.g., "El amor es eterno mientras dura - Luis García Montero")
 - Nunca inventes libros o autores que no existan"""

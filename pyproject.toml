@@ -10,4 +10,6 @@ dependencies = [
     "openai",
     "python-dotenv",
     "pydantic",
+    "rich",
+    "python-multipart",
 ]
