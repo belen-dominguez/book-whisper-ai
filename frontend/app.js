@@ -18,6 +18,7 @@ const loadingSection = document.querySelector(".loading-section");
 const resultsSection = document.querySelector(".results-section");
 const loadingMessage = loadingSection.querySelector(".loading-message");
 const loader = loadingSection.querySelector(".loader");
+const btnSave = document.getElementById("btn-guardar");
 
 let mediaRecorder;
 let audioChunks = [];
@@ -28,6 +29,8 @@ let animationId = null;
 let analyser = null;
 let audioContext = null;
 let audioYaAnalizado = false;
+let datosGuardados = false;
+let apiResponseData = null;
 
 const renderResults = (data) => {
   const {
@@ -97,8 +100,9 @@ const toggleButtons = () => {
     "disabled",
     blob === null || isSending || audioYaAnalizado,
   );
-  btnEscuchar.toggleAttribute("disabled", blob === null || isSending);
   btnBorrar.toggleAttribute("disabled", blob === null || isSending);
+  btnEscuchar.toggleAttribute("disabled", blob === null || isSending);
+  btnSave.toggleAttribute("disabled", datosGuardados);
 };
 
 function drawVisualizer() {
@@ -229,13 +233,45 @@ form.onsubmit = async (e) => {
     method: "POST",
     body: formData,
   });
-  const data = await response.json();
+  apiResponseData = await response.json();
 
   isSending = false;
   audioYaAnalizado = true;
+  datosGuardados = false;
   toggleButtons();
   toggleLoading(false);
-  renderResults(data);
+  renderResults(apiResponseData);
+};
+
+btnSave.onclick = async () => {
+  if (datosGuardados) return;
+  await guardarResultado();
 };
 
 toggleButtons();
+
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function guardarResultado() {
+  if (!apiResponseData) return;
+
+  const { error } = await supabaseClient.from("analisis").insert({
+    frase: apiResponseData.frase_transcripta,
+    tema: apiResponseData.tema,
+    tono: apiResponseData.tono,
+    recomendaciones: apiResponseData.recomendaciones,
+    frases_celebres: apiResponseData.frases_celebres,
+    pregunta_reflexion: apiResponseData.pregunta_reflexion,
+  });
+
+  if (error) {
+    console.error("Error guardando:", error);
+    datosGuardados = false;
+  } else {
+    console.log("Guardado!");
+    datosGuardados = true;
+  }
+
+  btnSave.toggleAttribute("disabled", datosGuardados);
+}

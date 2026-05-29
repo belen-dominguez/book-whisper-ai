@@ -21,7 +21,7 @@
     <h2>Grabá una frase de un libro y descubrí tu próxima lectura.</h2>
 
     <section class="record-section">
-      <div>
+      <div class="record-status">
         <h3>Estado: <span id="mic-status">esperando grabación</span></h3>
         <canvas id="visualizer" width="400" height="60"></canvas>
         <div class="recorder-controls">
@@ -36,7 +36,7 @@
       <form>
         <h3>Preview de tu grabación</h3>
         <audio id="audio-preview" controls></audio>
-        <div>
+        <div class="form-actions">
           <button type="button" id="btn-escuchar">
             <i class="fa-solid fa-headphones"></i> Escuchar
           </button>
@@ -59,7 +59,7 @@
       <h3>Resultados</h3>
       <div id="results">
         <p class="cita"></p>
-        <div>
+        <div class="tema-tono-grid">
           <div class="tema">
             <h4 class="tema-title">Tema:</h4>
             <p class="tema-content"></p>
@@ -89,13 +89,20 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="resumen">
           <h4 class="resumen-title">Para reflexionar:</h4>
           <p class="resumen-content"></p>
+        </div>
+        <div class="results-actions">
+          <button id="btn-guardar">
+            <i class="fa-solid fa-bookmark"></i> Guardar
+          </button>
         </div>
       </div>
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
