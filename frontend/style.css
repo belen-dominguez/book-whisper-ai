@@ -37,7 +37,7 @@ h2 {
 }
 
 /* Recorder section */
-body > div:first-of-type {
+.record-section {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -48,12 +48,12 @@ body > div:first-of-type {
   margin-bottom: 2rem;
 }
 
-body > div:first-of-type > div:first-child {
+.record-section > div:first-child {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-body > div:first-of-type h3 {
+.record-section h3 {
   font-size: 0.9rem;
   font-weight: 500;
   color: #a0aec0;
@@ -65,8 +65,17 @@ body > div:first-of-type h3 {
   font-weight: 600;
 }
 
+/* Audio visualizer */
+#visualizer {
+  width: 100%;
+  height: 60px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 1rem 0;
+}
+
 /* Button container */
-body > div:first-of-type > div:first-child > div {
+.recorder-controls {
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -91,7 +100,7 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-button:hover {
+button:hover:not([disabled]) {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
@@ -173,7 +182,7 @@ form button[type="submit"]:hover {
 }
 
 /* Results section */
-body > div:last-of-type {
+.results-section {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -183,7 +192,7 @@ body > div:last-of-type {
   max-width: 600px;
 }
 
-body > div:last-of-type > h3 {
+.results-section > h3 {
   font-size: 1.3rem;
   color: #f5f5f5;
   margin-bottom: 1.5rem;
@@ -268,7 +277,7 @@ h4.resumen-title {
 }
 
 .recomendacion-item,
-.frase-item {
+.frases-item {
   display: flex;
   gap: 10px;
 }
@@ -295,6 +304,59 @@ h4.resumen-title {
 #results > div:last-child p {
   color: #cbd5e0;
   line-height: 1.6;
+}
+
+.recorder-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 10px 0 30px;
+}
+
+.results-section,
+.loading-section.inactive {
+  display: none;
+}
+
+.results-section.active {
+  display: block;
+}
+
+.loader.hidden {
+  display: none;
+}
+
+.loading-section {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.loading-section h3 {
+  color: #a0aec0;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.loader {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */

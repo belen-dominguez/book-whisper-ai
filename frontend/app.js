@@ -1,3 +1,9 @@
+const API_URL =
+  window.location.hostname === "127.0.0.1" ||
+  window.location.hostname === "localhost"
+    ? "http://127.0.0.1:8000"
+    : "https://book-whisper-api.railway.app";
+
 const micStatus = document.getElementById("mic-status");
 const btnGrabar = document.getElementById("btn-grabar");
 const btnDetener = document.getElementById("btn-detener");
@@ -6,12 +12,22 @@ const btnEscuchar = document.getElementById("btn-escuchar");
 const btnBorrar = document.getElementById("btn-borrar");
 const btnEnviar = document.getElementById("btn-enviar");
 const form = document.querySelector("form");
+const canvas = document.getElementById("visualizer");
+const canvasCtx = canvas.getContext("2d");
+const loadingSection = document.querySelector(".loading-section");
+const resultsSection = document.querySelector(".results-section");
+const loadingMessage = loadingSection.querySelector(".loading-message");
+const loader = loadingSection.querySelector(".loader");
 
 let mediaRecorder;
 let audioChunks = [];
 let blob = null;
 let isRecording = false;
 let isSending = false;
+let animationId = null;
+let analyser = null;
+let audioContext = null;
+let audioYaAnalizado = false;
 
 const renderResults = (data) => {
   const {
@@ -73,29 +89,103 @@ const renderResults = (data) => {
 };
 const toggleButtons = () => {
   btnDetener.toggleAttribute("disabled", !isRecording);
-  btnGrabar.toggleAttribute("disabled", isRecording);
-  btnEnviar.toggleAttribute("disabled", blob === null || isSending);
+  btnGrabar.toggleAttribute(
+    "disabled",
+    isRecording || isSending || blob !== null,
+  );
+  btnEnviar.toggleAttribute(
+    "disabled",
+    blob === null || isSending || audioYaAnalizado,
+  );
+  btnEscuchar.toggleAttribute("disabled", blob === null || isSending);
+  btnBorrar.toggleAttribute("disabled", blob === null || isSending);
 };
+
+function drawVisualizer() {
+  if (!analyser) return;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  const draw = () => {
+    animationId = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const barCount = 40;
+    const barWidth = canvas.width / barCount;
+    const step = Math.floor(bufferLength / barCount);
+
+    for (let i = 0; i < barCount; i++) {
+      const value = dataArray[i * step];
+      const barHeight = (value / 255) * canvas.height;
+      const x = i * barWidth;
+      const y = canvas.height - barHeight;
+
+      const hue = 210 + (value / 255) * 40;
+      canvasCtx.fillStyle = `hsla(${hue}, 80%, 65%, ${0.6 + (value / 255) * 0.4})`;
+      canvasCtx.beginPath();
+      canvasCtx.roundRect(x + 1, y, barWidth - 2, barHeight, 3);
+      canvasCtx.fill();
+    }
+  };
+
+  draw();
+}
+
+function stopVisualizer() {
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
+  canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 async function startRecording() {
   isRecording = true;
-  //  permiso al micrófono
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  // crear grabador
-  mediaRecorder = new MediaRecorder(stream);
 
-  // cada vez que llegan datos se guardan en el array
+  // Setup audio visualizer
+  audioContext = new AudioContext();
+  const source = audioContext.createMediaStreamSource(stream);
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  source.connect(analyser);
+  drawVisualizer();
+
+  // Setup recorder
+  mediaRecorder = new MediaRecorder(stream);
   mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-  // cuando para, se arma el archivo
   mediaRecorder.onstop = () => {
     blob = new Blob(audioChunks, { type: "audio/webm" });
     const audioUrl = URL.createObjectURL(blob);
     audioPreview.src = audioUrl;
+    stopVisualizer();
+    if (audioContext) {
+      audioContext.close();
+      audioContext = null;
+    }
     toggleButtons();
   };
 
   mediaRecorder.start();
 }
+
+const toggleLoading = (isLoading) => {
+  loadingMessage.textContent = isLoading
+    ? "Buscando tus próximas lecturas... 📚"
+    : "";
+  loader.classList.toggle("hidden", !isLoading);
+  resultsSection.classList.toggle("active", !isLoading);
+  loadingSection.classList.toggle("inactive", !isLoading);
+};
+
+audioPreview.onplay = () => {
+  btnEscuchar.disabled = true;
+};
+audioPreview.onended = () => {
+  btnEscuchar.disabled = false;
+};
 
 btnGrabar.onclick = () => {
   startRecording();
@@ -119,11 +209,13 @@ btnBorrar.onclick = () => {
   audioPreview.src = "";
   blob = null;
   audioChunks = [];
+  audioYaAnalizado = false;
   micStatus.textContent = "esperando grabación";
   toggleButtons();
 };
 
 form.onsubmit = async (e) => {
+  if (audioYaAnalizado) return;
   e.preventDefault();
 
   const formData = new FormData();
@@ -131,15 +223,18 @@ form.onsubmit = async (e) => {
   formData.append("file", blob, "grabacion.webm");
   isSending = true;
   toggleButtons();
+  toggleLoading(true);
 
-  const response = await fetch("http://127.0.0.1:8000/uploadfile/", {
+  const response = await fetch(`${API_URL}/uploadfile/`, {
     method: "POST",
     body: formData,
   });
   const data = await response.json();
 
   isSending = false;
+  audioYaAnalizado = true;
   toggleButtons();
+  toggleLoading(false);
   renderResults(data);
 };
 

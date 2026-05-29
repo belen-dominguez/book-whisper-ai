@@ -20,10 +20,11 @@
     <h1>Book Whisper</h1>
     <h2>Grabá una frase de un libro y descubrí tu próxima lectura.</h2>
 
-    <div>
+    <section class="record-section">
       <div>
         <h3>Estado: <span id="mic-status">esperando grabación</span></h3>
-        <div>
+        <canvas id="visualizer" width="400" height="60"></canvas>
+        <div class="recorder-controls">
           <button id="btn-grabar">
             <i class="fa-solid fa-microphone"></i> Grabar
           </button>
@@ -47,9 +48,14 @@
           </button>
         </div>
       </form>
-    </div>
+    </section>
 
-    <div>
+    <section class="loading-section">
+      <h3 class="loading-message">Susurrá una frase, descubrí un mundo..</h3>
+      <div class="loader hidden"></div>
+    </section>
+
+    <section class="results-section">
       <h3>Resultados</h3>
       <div id="results">
         <p class="cita"></p>
@@ -88,7 +94,7 @@
           <p class="resumen-content"></p>
         </div>
       </div>
-    </div>
+    </section>
 
     <script src="app.js"></script>
   </body>
