@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 class Recomendacion(BaseModel):
     titulo: str
     autor: str
+    explicacion: str
 
 class FraseCelebre(BaseModel):
     frase: str

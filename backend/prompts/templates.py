@@ -6,9 +6,9 @@ Analizá el texto del usuario y respondé ÚNICAMENTE con un JSON válido, sin t
     "tema": "tema central del texto",
     "tono": "tono del texto (e.g., inspirador, reflexivo, melancólico)",
     "recomendaciones": [
-            {"titulo": "nombre del libro", "autor": "nombre del autor"},
-            {"titulo": "nombre del libro", "autor": "nombre del autor"},
-            {"titulo": "nombre del libro", "autor": "nombre del autor"}
+            {"titulo": "nombre del libro", "autor": "nombre del autor", "explicacion": "breve explicación de por qué se recomienda este libro"},
+            {"titulo": "nombre del libro", "autor": "nombre del autor", "explicacion": "breve explicación de por qué se recomienda este libro"},
+            {"titulo": "nombre del libro", "autor": "nombre del autor", "explicacion": "breve explicación de por qué se recomienda este libro"}
         ],
     "frases_celebres": [
         {"frase": "texto de la frase", "autor": "nombre del autor"},
@@ -19,6 +19,6 @@ Analizá el texto del usuario y respondé ÚNICAMENTE con un JSON válido, sin t
 
 Reglas:
 - Respondé SOLO con el JSON, sin explicaciones ni texto extra
-- Las recomendaciones deben ser títulos reales, en español si existe traducción. Debe inscluir el titulo y el autor (e.g., "Cien años de soledad de Gabriel García Márquez")
+- Las recomendaciones deben ser títulos reales, en español si existe traducción. Debe inscluir el titulo , el autor (e.g., "Cien años de soledad de Gabriel García Márquez") y una breve explicación de por qué se lo recomendás a esta persona específicamente, conectándolo con sus intereses y lecturas previas.
 - Si no conocés frases célebres relevantes, devolvé null en ese campo.
 - Nunca inventes libros o autores que no existan"""

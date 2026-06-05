@@ -68,6 +68,7 @@ const renderResults = (data) => {
         <div class="detail">
             <p class="recomendacion-title">${recomendacion.titulo}</p>
             <p class="recomendacion-author">${recomendacion.autor}</p>
+            <p class="recomendacion-explanation">${recomendacion.explicacion}</p>
         </div>
     </div>`,
       )
@@ -271,6 +272,7 @@ async function guardarResultado() {
   } else {
     console.log("Guardado!");
     datosGuardados = true;
+    btnSave.innerHTML = `<i class="fa-solid fa-check"></i> Guardado`;
   }
 
   btnSave.toggleAttribute("disabled", datosGuardados);
