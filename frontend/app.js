@@ -19,6 +19,19 @@ const resultsSection = document.querySelector(".results-section");
 const loadingMessage = loadingSection.querySelector(".loading-message");
 const loader = loadingSection.querySelector(".loader");
 const btnSave = document.getElementById("btn-guardar");
+const errorSection = document.querySelector(".error-section");
+const errorText = document.getElementById("error-text");
+const saveError = document.getElementById("save-error");
+
+const showError = (msg) => {
+  errorText.textContent = msg;
+  errorSection.classList.remove("hidden");
+};
+
+const hideError = () => {
+  errorText.textContent = "";
+  errorSection.classList.add("hidden");
+};
 
 let mediaRecorder;
 let audioChunks = [];
@@ -34,6 +47,7 @@ let apiResponseData = null;
 
 const renderResults = (data) => {
   const {
+    titulo_libro,
     frase_transcripta,
     frases_celebres,
     pregunta_reflexion,
@@ -41,7 +55,9 @@ const renderResults = (data) => {
     tema,
     tono,
   } = data;
+
   const resultsContainer = document.getElementById("results");
+  const tituloLibroElem = resultsContainer.querySelector(".titulo-libro");
   const citaElem = resultsContainer.querySelector(".cita");
   const temaElem = resultsContainer.querySelector(".tema .tema-content");
   const tonoElem = resultsContainer.querySelector(".tono .tono-content");
@@ -53,6 +69,7 @@ const renderResults = (data) => {
     ".frases .frases-content",
   );
 
+  tituloLibroElem && (tituloLibroElem.textContent = titulo_libro || "");
   citaElem && (citaElem.textContent = frase_transcripta);
   temaElem && (temaElem.textContent = tema);
   tonoElem && (tonoElem.textContent = tono);
@@ -229,19 +246,33 @@ form.onsubmit = async (e) => {
   isSending = true;
   toggleButtons();
   toggleLoading(true);
+  hideError();
 
-  const response = await fetch(`${API_URL}/uploadfile/`, {
-    method: "POST",
-    body: formData,
-  });
-  apiResponseData = await response.json();
+  try {
+    const response = await fetch(`${API_URL}/uploadfile/`, {
+      method: "POST",
+      body: formData,
+    });
 
-  isSending = false;
-  audioYaAnalizado = true;
-  datosGuardados = false;
-  toggleButtons();
-  toggleLoading(false);
-  renderResults(apiResponseData);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const msg =
+        errorData?.detail || `Error del servidor (${response.status})`;
+      throw new Error(msg);
+    }
+
+    apiResponseData = await response.json();
+    audioYaAnalizado = true;
+    datosGuardados = false;
+    console.log("PPPP", apiResponseData);
+    renderResults(apiResponseData);
+  } catch (error) {
+    showError(error.message);
+  } finally {
+    isSending = false;
+    toggleButtons();
+    toggleLoading(false);
+  }
 };
 
 btnSave.onclick = async () => {
@@ -257,8 +288,12 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 async function guardarResultado() {
   if (!apiResponseData) return;
 
+  const citaActual = document.querySelector(".cita").textContent;
+  const tituloActual = document.querySelector(".titulo-libro").textContent;
+
   const { error } = await supabaseClient.from("analisis").insert({
-    frase: apiResponseData.frase_transcripta,
+    frase: citaActual,
+    titulo_obra: tituloActual,
     tema: apiResponseData.tema,
     tono: apiResponseData.tono,
     recomendaciones: apiResponseData.recomendaciones,
@@ -268,8 +303,11 @@ async function guardarResultado() {
 
   if (error) {
     console.error("Error guardando:", error);
+    saveError.textContent = `Error al guardar: ${error.message}`;
+    saveError.classList.remove("hidden");
     datosGuardados = false;
   } else {
+    saveError.classList.add("hidden");
     console.log("Guardado!");
     datosGuardados = true;
     btnSave.innerHTML = `<i class="fa-solid fa-check"></i> Guardado`;

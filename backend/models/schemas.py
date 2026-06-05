@@ -10,6 +10,7 @@ class FraseCelebre(BaseModel):
     autor: str
 
 class BookWhisperResponse(BaseModel):
+    titulo_libro: str | None = None
     frase_transcripta: str = Field(..., description="La frase transcripta del audio")
     tema: str = Field(..., description="El tema principal de la frase")
     tono: str = Field(..., description="El tono de la frase (e.g., inspirador, motivacional, reflexivo)")

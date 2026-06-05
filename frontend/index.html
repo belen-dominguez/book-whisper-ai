@@ -55,10 +55,20 @@
       <div class="loader hidden"></div>
     </section>
 
+    <section class="error-section hidden">
+      <div class="error-message">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p id="error-text"></p>
+      </div>
+    </section>
+
     <section class="results-section">
       <h3>Resultados</h3>
       <div id="results">
-        <p class="cita"></p>
+        <blockquote class="cita-block">
+          <p class="cita" contenteditable="true"></p>
+          <footer class="titulo-libro" contenteditable="true"></footer>
+        </blockquote>
         <div class="tema-tono-grid">
           <div class="tema">
             <h4 class="tema-title">Tema:</h4>
@@ -97,6 +107,7 @@
           <button id="btn-guardar">
             <i class="fa-solid fa-bookmark"></i> Guardar
           </button>
+          <p id="save-error" class="save-error hidden"></p>
         </div>
       </div>
     </section>

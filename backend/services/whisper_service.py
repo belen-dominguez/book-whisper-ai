@@ -16,7 +16,9 @@ class WhisperService:
             with open(audio_file, "rb") as f:
                 transcription = self.client.audio.transcriptions.create(
                     model=WHISPER_MODEL,
-                    file=f
+                    file=f,
+                    language="es",
+                      prompt="Transcripción en español. Respetá la puntuación natural: comas en pausas cortas, puntos en pausas largas."
                 )
                 logger.info("Transcription complete.")
                 return transcription.text
