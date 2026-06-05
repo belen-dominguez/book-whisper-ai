@@ -120,13 +120,13 @@ Recibe un archivo de audio (`.webm`) y devuelve el análisis completo.
 
 Al hacer click en **Guardar**, el análisis completo se almacena en una tabla `analisis` en Supabase con los siguientes campos:
 
-| Campo | Descripción |
-|-------|-------------|
-| `frase` | La frase transcripta del audio |
-| `tema` | Tema central detectado |
-| `tono` | Tono del texto |
-| `recomendaciones` | JSON con las recomendaciones de libros |
-| `frases_celebres` | JSON con frases célebres relacionadas |
-| `pregunta_reflexion` | Pregunta de reflexión generada |
+| Campo                | Descripción                            |
+| -------------------- | -------------------------------------- |
+| `frase`              | La frase transcripta del audio         |
+| `tema`               | Tema central detectado                 |
+| `tono`               | Tono del texto                         |
+| `recomendaciones`    | JSON con las recomendaciones de libros |
+| `frases_celebres`    | JSON con frases célebres relacionadas  |
+| `pregunta_reflexion` | Pregunta de reflexión generada         |
 
 La conexión a Supabase se configura en `frontend/config.js` con la URL y la key del proyecto.
